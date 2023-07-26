@@ -30,8 +30,6 @@ To interact with the CustomerBook smart contract, you will need an Ethereum wall
 
 Here are some examples of interactions you can perform:
 
-1. Create a new order:
-
   Call the addOrder function with the required parameters.
   Update an existing order:
 
