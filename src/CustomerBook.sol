@@ -283,31 +283,6 @@ contract CustomerBook {
         emit OrderDeleted(orderId);
     }
 
-    function _uintToStrConverter(
-        uint256 _value
-    ) private pure returns (string memory) {
-        if (_value == 0) {
-            return "0";
-        }
-
-        uint256 temp = _value;
-        uint256 digits;
-
-        while (temp != 0) {
-            digits++;
-            temp /= 10;
-        }
-
-        bytes memory buffer = new bytes(digits);
-        while (_value != 0) {
-            digits -= 1;
-            buffer[digits] = bytes1(uint8(48 + (_value % 10)));
-            _value /= 10;
-        }
-
-        return string(buffer);
-    }
-
     function callToMark(uint128 _orderId) public onlyOperator {
         emit CallFromOperator(_orderId, "is done, need to be Marked");
     }
