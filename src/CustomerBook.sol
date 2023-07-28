@@ -2,6 +2,11 @@
 pragma solidity ^0.8.18;
 
 contract CustomerBook {
+    error CustomerBook__HigherDownPaymentValue();
+    error CustomerBook__IsNotOwner();
+    error CustomerBook__IsNotAuthorizedPerson();
+    error CustomerBook__ZeroAddressGiven();
+
     enum OrderStatus {
         DESIGN, // 0
         MEDIAPREPARATION, // 1
@@ -27,6 +32,7 @@ contract CustomerBook {
     }
 
     mapping(uint256 => Order) private idToOrders;
+    mapping(uint128 => bool) private idToIsDeleted;
 
     uint128 private orderId;
     address public owner;
@@ -72,7 +78,9 @@ contract CustomerBook {
     event CallFromOperator(uint128 indexed orderId, string message);
 
     modifier onlyOwner() {
-        require(msg.sender == owner, "Only Owner can access this function");
+        if (msg.sender != owner) {
+            revert CustomerBook__IsNotOwner();
+        }
         _;
     }
 
@@ -84,10 +92,9 @@ contract CustomerBook {
                 break;
             }
         }
-        require(
-            isManager || msg.sender == owner,
-            "Only manager can access this function"
-        );
+        if (!isManager || msg.sender != owner) {
+            revert CustomerBook__IsNotAuthorizedPerson();
+        }
         _;
     }
 
@@ -99,10 +106,9 @@ contract CustomerBook {
                 break;
             }
         }
-        require(
-            isAdmin || msg.sender == owner,
-            "Only admin can access this function"
-        );
+        if (!isAdmin || msg.sender != owner) {
+            revert CustomerBook__IsNotAuthorizedPerson();
+        }
         _;
     }
 
@@ -114,10 +120,9 @@ contract CustomerBook {
                 break;
             }
         }
-        require(
-            isOperator || msg.sender == owner,
-            "Only operator can access this function"
-        );
+        if (!isOperator || msg.sender != owner) {
+            revert CustomerBook__IsNotAuthorizedPerson();
+        }
         _;
     }
 
@@ -126,17 +131,23 @@ contract CustomerBook {
     }
 
     function setManager(address _newManager) public onlyOwner {
-        require(_newManager != address(0), "New manager is zero address");
+        if (_newManager == address(0)) {
+            revert CustomerBook__ZeroAddressGiven();
+        }
         managers.push(_newManager);
     }
 
     function setAdmin(address _newAdmin) public onlyOwner {
-        require(_newAdmin != address(0), "New admin is zero address");
+        if (_newAdmin == address(0)) {
+            revert CustomerBook__ZeroAddressGiven();
+        }
         admins.push(_newAdmin);
     }
 
     function setOperator(address _newOperator) public onlyOwner {
-        require(_newOperator != address(0), "New operator is zero address");
+        if (_newOperator == address(0)) {
+            revert CustomerBook__ZeroAddressGiven();
+        }
         operators.push(_newOperator);
     }
 
@@ -144,7 +155,9 @@ contract CustomerBook {
         uint256 _managerIndex,
         address _newManager
     ) public onlyOwner {
-        require(_newManager != address(0), "New manager is zero address");
+        if (_newManager == address(0)) {
+            revert CustomerBook__ZeroAddressGiven();
+        }
         require(_managerIndex < managers.length, "Invalid manager index");
 
         for (uint256 i = _managerIndex; i < managers.length - 1; i++) {
@@ -159,7 +172,9 @@ contract CustomerBook {
         uint256 _operatorIndex,
         address _newOperator
     ) public onlyOwner {
-        require(_newOperator != address(0), "New operator is zero address");
+        if (_newOperator == address(0)) {
+            revert CustomerBook__ZeroAddressGiven();
+        }
         require(_operatorIndex < operators.length, "Invalid operator index");
 
         for (uint256 i = _operatorIndex; i < operators.length - 1; i++) {
@@ -174,7 +189,9 @@ contract CustomerBook {
         uint256 _adminIndex,
         address _newAdmin
     ) public onlyOwner {
-        require(_newAdmin != address(0), "New admin is zero address");
+        if (_newAdmin == address(0)) {
+            revert CustomerBook__ZeroAddressGiven();
+        }
         require(_adminIndex < admins.length, "Invalid admin index");
 
         for (uint256 i = _adminIndex; i < admins.length - 1; i++) {
@@ -196,11 +213,7 @@ contract CustomerBook {
         uint64 _downPayment
     ) public onlyAdmin {
         require(
-            _downPayment < _totalPrice,
-            "Down payment cannot be greater than the total price"
-        );
-        require(
-            _deadlineDate > _orderDate,
+            _deadlineDate >= _orderDate,
             "Deadline must be after order date"
         );
 
@@ -215,7 +228,13 @@ contract CustomerBook {
         newOrder.totalPrice = _totalPrice;
         newOrder.downPayment = _downPayment;
         newOrder.orderStatus = OrderStatus.DESIGN;
-        newOrder.isPaid = (_downPayment == _totalPrice);
+        if (_downPayment > _totalPrice) {
+            revert CustomerBook__HigherDownPaymentValue();
+        } else if (_downPayment == _totalPrice) {
+            newOrder.isPaid = true;
+        } else {
+            newOrder.isPaid = false;
+        }
 
         emit OrderCreated(
             orderId,
@@ -245,12 +264,12 @@ contract CustomerBook {
     ) public onlyAdmin {
         require(_orderId <= orderId, "Invalid order ID");
         require(
-            _downPayment < _totalPrice,
-            "Down payment cannot be greater than the total price"
+            _deadlineDate >= _orderDate,
+            "Deadline must be after order date"
         );
         require(
-            _deadlineDate > _orderDate,
-            "Deadline must be after order date"
+            !idToIsDeleted[_orderId],
+            "Order with the given ID has been deleted and cannot be updated"
         );
 
         Order storage existingOrder = idToOrders[_orderId];
@@ -262,6 +281,13 @@ contract CustomerBook {
         existingOrder.orderQuantity = _orderQuantity;
         existingOrder.totalPrice = _totalPrice;
         existingOrder.downPayment = _downPayment;
+        if (_downPayment > _totalPrice) {
+            revert CustomerBook__HigherDownPaymentValue();
+        } else if (_downPayment == _totalPrice) {
+            existingOrder.isPaid = true;
+        } else {
+            existingOrder.isPaid = false;
+        }
 
         emit OrderChanged(
             orderId,
@@ -276,8 +302,14 @@ contract CustomerBook {
         );
     }
 
-    function deleteOrder(uint256 _orderId) public onlyOwner {
+    function deleteOrder(uint128 _orderId) public onlyOwner {
         require(_orderId <= orderId, "Invalid order ID");
+        require(
+            !idToIsDeleted[_orderId],
+            "Order with the given ID has already been deleted"
+        );
+
+        idToIsDeleted[_orderId] = true;
         delete idToOrders[_orderId];
 
         emit OrderDeleted(orderId);
@@ -352,13 +384,6 @@ contract CustomerBook {
         }
 
         return unpaidOrderIds;
-    }
-
-    function getOrderStatusById(
-        uint128 _orderId
-    ) public view returns (OrderStatus) {
-        require(_orderId <= orderId, "Invalid order ID.");
-        return idToOrders[orderId].orderStatus;
     }
 
     function getOrderById(
