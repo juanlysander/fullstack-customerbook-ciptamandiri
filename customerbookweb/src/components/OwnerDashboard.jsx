@@ -48,6 +48,7 @@ const OwnerDashboard = () => {
                 type="text"
                 id="addAdmin"
                 style={styles.input}
+                className="containerColor white"
                 value={addAdminAddress}
                 placeholder="0x00.."
                 onChange={(e) => setAddAdminAddress(e.target.value)}
@@ -87,6 +88,7 @@ const OwnerDashboard = () => {
                 type="text"
                 id="addManager"
                 style={styles.input}
+                className="containerColor white"
                 value={addManagerAddress}
                 placeholder="0x00.."
                 onChange={(e) => setAddManagerAddress(e.target.value)}
@@ -128,6 +130,7 @@ const OwnerDashboard = () => {
                 type="text"
                 id="addOperator"
                 style={styles.input}
+                className="containerColor white"
                 value={addOperatorAddress}
                 placeholder="0x00.."
                 onChange={(e) => setAddOperatorAddress(e.target.value)}
@@ -175,6 +178,7 @@ const OwnerDashboard = () => {
                     type="text"
                     id="adminId"
                     style={styles.input}
+                    className="containerColor white"
                     value={adminId}
                     placeholder="1.."
                     onChange={(e) => setAdminId(e.target.value)}
@@ -186,6 +190,7 @@ const OwnerDashboard = () => {
                     type="text"
                     id="changeAdmin"
                     style={styles.input}
+                    className="containerColor white"
                     value={changeAdminAddress}
                     placeholder="0x00.."
                     onChange={(e) => setChangeAdminAddress(e.target.value)}
@@ -217,6 +222,7 @@ const OwnerDashboard = () => {
                     type="text"
                     id="managerId"
                     style={styles.input}
+                    className="containerColor white"
                     value={managerId}
                     placeholder="1.."
                     onChange={(e) => setManagerId(e.target.value)}
@@ -228,6 +234,7 @@ const OwnerDashboard = () => {
                     type="text"
                     id="changeManager"
                     style={styles.input}
+                    className="containerColor white"
                     value={changeManagerAddress}
                     placeholder="0x00.."
                     onChange={(e) => setChangeManagerAddress(e.target.value)}
@@ -262,6 +269,7 @@ const OwnerDashboard = () => {
                     type="text"
                     id="operatorId"
                     style={styles.input}
+                    className="containerColor white"
                     value={operatorId}
                     placeholder="1.."
                     onChange={(e) => setOperatorId(e.target.value)}
@@ -273,6 +281,7 @@ const OwnerDashboard = () => {
                     type="text"
                     id="changeOperator"
                     style={styles.input}
+                    className="containerColor white"
                     value={changeOperatorAddress}
                     placeholder="0x00.."
                     onChange={(e) => setChangeOperatorAddress(e.target.value)}

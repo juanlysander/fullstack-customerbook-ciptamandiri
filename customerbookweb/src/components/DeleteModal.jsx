@@ -119,10 +119,10 @@ const styles = {
   },
   deleteButton: {
     padding: "10px 20px",
-    backgroundColor: "#fe2a2a",
+    backgroundColor: "crimson",
     borderRadius: "5px",
     color: "white",
-    fontSize: "16px",
+    fontSize: "14px",
     width: "150px",
   },
 };

@@ -109,7 +109,6 @@ const styles = {
     flexDirection: "column",
     padding: "30px",
     overflow: "hidden",
-    overflowY: "scroll",
   },
   wrapper: {
     gap: "20px",

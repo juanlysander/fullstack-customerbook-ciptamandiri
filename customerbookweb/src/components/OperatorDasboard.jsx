@@ -8,28 +8,123 @@ import React, { useState } from "react";
 import { CONTRACT_ADDRESS } from "../../env";
 
 function OperatorDashboard() {
+  const { contract } = useContract(CONTRACT_ADDRESS);
   const [id, setId] = useState("");
+  const [idCheck, setIdCheck] = useState("");
   const address = useAddress();
+
+  const { data: orders } = useContractRead(contract, "getOrderById", [idCheck]);
+
+  const formatCurrency = (amount) => {
+    const formattedAmount = new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }).format(amount);
+
+    return formattedAmount.replace(/,(\d{2})$/, ",-");
+  };
+
+  const formatDate = (dateString) => {
+    const year = dateString.slice(0, 4);
+    const month = dateString.slice(4, 6);
+    const day = dateString.slice(6, 8);
+    return `${day}.${month}.${year}`;
+  };
 
   function resetForm() {
     setId("");
   }
+
   return (
     <div
       id="operatorDashboard"
       className="containerColor"
       style={styles.flexBox}
     >
-      <div style={styles.logBox} className="containerColor-2"></div>
+      <div style={styles.chatBox} className="containerColor-2">
+        Chat Box
+      </div>
       {address && (
         <div style={styles.buttonBox}>
+          {/* ORDER CHECKER */}
+          <div
+            style={styles.orderCheckerContainer}
+            className="containerColor-2"
+          >
+            <h3 className="white" style={styles.h3}>
+              Order Checker
+            </h3>
+            <input
+              type="number"
+              style={styles.input}
+              className="containerColor white"
+              value={idCheck}
+              placeholder={"enter ID"}
+              onChange={(e) => setIdCheck(e.target.value)}
+            />
+            {orders && (
+              <div style={styles.orderList}>
+                <p style={styles.list}>
+                  Ownr: <b>{orders[1]}</b>
+                </p>
+                <p style={styles.list}>
+                  Date: <b>{formatDate(orders[2].toString())}</b>
+                </p>
+                <p style={styles.list}>
+                  Dead: <b>{formatDate(orders[3].toString())}</b>
+                </p>
+                <p style={styles.list}>
+                  Name: <b>{orders[4]}</b>
+                </p>
+                <p style={styles.list}>
+                  Spec: <b>{orders[5]}</b>
+                </p>
+                <p style={styles.list}>
+                  Qnty: <b>{orders[6].toString()}</b>
+                </p>
+                <p style={styles.list}>
+                  Prce: <b>{formatCurrency(orders[7].toString())}</b>
+                </p>
+                <p style={styles.list}>
+                  Dpay: <b>{formatCurrency(orders[8].toString())}</b>
+                </p>
+                <p style={styles.list}>
+                  Stat:{" "}
+                  <b>
+                    {orders[9] == 0
+                      ? "DESIGN"
+                      : orders[9] == 1
+                      ? "PAPER"
+                      : orders[9] == 2
+                      ? "PLATE"
+                      : orders[9] == 3
+                      ? "PRINT"
+                      : orders[9] == 4
+                      ? "BLADE"
+                      : orders[9] == 5
+                      ? "CUT"
+                      : orders[9] == 6
+                      ? "FINISHING"
+                      : "DONE"}
+                  </b>
+                </p>
+                <p style={styles.list}>
+                  Paid: <b>{orders[10] ? "Paid" : "Unpaid"}</b>
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* BUTTON */}
           <div style={styles.buttonContainer}>
             <div style={styles.inputContainer}>
               <label htmlFor="id" className="white">
-                Order ID
+                CAll Manager to Mark
               </label>
               <input
                 type="number"
+                className="containerColor-2 white"
+                placeholder="enter ID"
                 id="id"
                 value={id}
                 onChange={(e) => setId(e.target.value)}
@@ -71,17 +166,23 @@ const styles = {
     height: "100vh",
     padding: "50px",
   },
-  logBox: {
+  chatBox: {
     width: "100%",
-    height: "30%",
+    height: "200px",
     color: "white",
     borderRadius: "6px",
+    padding: "20px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-end",
   },
   buttonBox: {
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-start",
     gap: "100px",
+    width: "100%",
+    height: "calc(100% - 230px)",
   },
   buttonContainer: {
     display: "flex",
@@ -100,10 +201,12 @@ const styles = {
     gap: "10px",
   },
   input: {
-    padding: "10px 20px",
+    padding: "10px 15px",
     borderRadius: "10px",
-    fontSize: "18px",
+    fontSize: "14px",
     outline: "none",
+    border: "none",
+    width: "140px",
   },
   circle: {
     width: "200px",
@@ -120,5 +223,29 @@ const styles = {
     color: "white",
     fontWeight: "bold",
     fontSize: "40px",
+  },
+  h3: {
+    fontSize: "17px",
+    width: "100%",
+    textAlign: "left",
+  },
+  orderCheckerContainer: {
+    borderRadius: "6px",
+    padding: "20px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "10px",
+    width: "420px",
+    height: "100%",
+    overflow: "hidden",
+    overflowY: "scroll",
+  },
+  orderList: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "6px",
+  },
+  list: {
+    fontSize: "14px",
   },
 };

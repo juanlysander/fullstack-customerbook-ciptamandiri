@@ -25,7 +25,7 @@ const OrderList = () => {
   const { data: orders } = useContractRead(contract, "getAllOrders");
 
   return (
-    <div>
+    <div style={styles.tableWrapper}>
       <table style={styles.table}>
         <thead>
           <tr>
@@ -62,7 +62,13 @@ const OrderList = () => {
               <td style={styles.dpData}>
                 {formatCurrency(order.downPayment.toString())}
               </td>
-              <td style={styles.stateData}>
+              <td
+                style={
+                  order.orderStatus == 7
+                    ? styles.stateDataDone
+                    : styles.stateData
+                }
+              >
                 {order.orderStatus == 0
                   ? "DESIGN"
                   : order.orderStatus == 1
@@ -93,13 +99,15 @@ const OrderList = () => {
 export default OrderList;
 
 const styles = {
+  tableWrapper: {
+    height: "calc(100vh - 400px)",
+    overflow: "hidden",
+    overflowY: "scroll",
+    marginTop: "30px",
+  },
   table: {
     width: "100%",
-    padding: "30px 0px",
-  },
-  tbody: {
-    overflow: "hidden",
-    overflowY: "auto",
+    padding: "0px 0px 30px 0px",
   },
   id: {
     width: "4%",
@@ -247,6 +255,14 @@ const styles = {
     fontSize: "14px",
     textAlign: "center",
     borderBottom: "1px solid #4a4a4a",
+  },
+  stateDataDone: {
+    padding: "8px 4px",
+    fontSize: "14px",
+    textAlign: "center",
+    borderBottom: "1px solid #4a4a4a",
+    backgroundColor: "#469937",
+    fontWeight: "bold",
   },
   paidData: {
     padding: "8px 4px",
