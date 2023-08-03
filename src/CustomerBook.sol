@@ -204,7 +204,6 @@ contract CustomerBook {
 
     function addOrder(
         string memory _orderOwner,
-        uint256 _orderDate,
         uint256 _deadlineDate,
         string memory _orderName,
         string memory _specs,
@@ -212,15 +211,10 @@ contract CustomerBook {
         uint64 _totalPrice,
         uint64 _downPayment
     ) public onlyAdmin {
-        require(
-            _deadlineDate >= _orderDate,
-            "Deadline must be after order date"
-        );
-
         orderId++;
         Order storage newOrder = idToOrders[orderId];
         newOrder.orderOwner = _orderOwner;
-        newOrder.orderDate = _orderDate;
+        newOrder.orderDate = block.timestamp;
         newOrder.deadlineDate = _deadlineDate;
         newOrder.orderName = _orderName;
         newOrder.specs = _specs;
@@ -239,7 +233,7 @@ contract CustomerBook {
         emit OrderCreated(
             orderId,
             _orderOwner,
-            _orderDate,
+            newOrder.orderDate,
             _deadlineDate,
             _orderName,
             _specs,
@@ -254,7 +248,6 @@ contract CustomerBook {
     function updateOrder(
         uint128 _orderId,
         string memory _orderOwner,
-        uint256 _orderDate,
         uint256 _deadlineDate,
         string memory _orderName,
         string memory _specs,
@@ -264,17 +257,13 @@ contract CustomerBook {
     ) public onlyAdmin {
         require(_orderId <= orderId, "Invalid order ID");
         require(
-            _deadlineDate >= _orderDate,
-            "Deadline must be after order date"
-        );
-        require(
             !idToIsDeleted[_orderId],
             "Order with the given ID has been deleted and cannot be updated"
         );
 
         Order storage existingOrder = idToOrders[_orderId];
         existingOrder.orderOwner = _orderOwner;
-        existingOrder.orderDate = _orderDate;
+        existingOrder.orderDate = block.timestamp;
         existingOrder.deadlineDate = _deadlineDate;
         existingOrder.orderName = _orderName;
         existingOrder.specs = _specs;
@@ -292,7 +281,7 @@ contract CustomerBook {
         emit OrderChanged(
             orderId,
             _orderOwner,
-            _orderDate,
+            block.timestamp,
             _deadlineDate,
             _orderName,
             _specs,

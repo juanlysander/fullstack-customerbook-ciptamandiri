@@ -29,18 +29,24 @@ const OwnerDashboard = () => {
   }
   const { contract } = useContract(CONTRACT_ADDRESS);
 
-  const { data: admins } = useContractRead(contract, "getAdmins");
-  const { data: managers } = useContractRead(contract, "getManagers");
-  const { data: operators } = useContractRead(contract, "getOperators");
-
-  console.log(admins);
-  console.log(managers);
-  console.log(operators);
+  const { data: admins, isLoading: isLoadingAdmins } = useContractRead(
+    contract,
+    "getAdmins"
+  );
+  const { data: managers, isLoading: isLoadingManagers } = useContractRead(
+    contract,
+    "getManagers"
+  );
+  const { data: operators, isLoading: isLoadingOperators } = useContractRead(
+    contract,
+    "getOperators"
+  );
 
   return (
     <div id="ownerDashboard" className="containerColor" style={styles.flexBox}>
       {address && (
         <div style={styles.rowContainerAdd} className="containerColor-2">
+          {/* ADD ADMIN */}
           <div style={styles.columnGap}>
             <div style={styles.inputField}>
               <label htmlFor="addAdmin">Add Admin:</label>
@@ -72,15 +78,25 @@ const OwnerDashboard = () => {
             </div>
             <div style={styles.listContainer}>
               <h4 className="white">Admin List:</h4>
-              <ul>
-                {admins?.map((admin, index) => (
-                  <li key={index} style={styles.allList}>
-                    {`${index}. ${admin.slice(0, 6)} . . . ${admin.slice(-4)}`}
-                  </li>
-                ))}
+              <ul style={styles.ulist}>
+                {!isLoadingAdmins ? (
+                  admins?.map((admin, index) => (
+                    <li key={index} style={styles.allList}>
+                      {`${index}. ${admin.slice(0, 6)} . . . ${admin.slice(
+                        -4
+                      )}`}
+                    </li>
+                  ))
+                ) : (
+                  <div style={styles.spinnerDiv}>
+                    <div className="spinner"></div>
+                  </div>
+                )}
               </ul>
             </div>
           </div>
+
+          {/* ADD MANAGER */}
           <div style={styles.columnGap}>
             <div style={styles.inputField}>
               <label htmlFor="addManager">Add Manager:</label>
@@ -113,16 +129,24 @@ const OwnerDashboard = () => {
             <div style={styles.listContainer}>
               <h4 className="white">Manager List:</h4>
               <ul style={styles.ulist}>
-                {managers?.map((manager, index) => (
-                  <li key={index} style={styles.allList}>
-                    {`${index}. ${manager.slice(0, 6)} . . . ${manager.slice(
-                      -4
-                    )}`}
-                  </li>
-                ))}
+                {!isLoadingManagers ? (
+                  managers?.map((manager, index) => (
+                    <li key={index} style={styles.allList}>
+                      {`${index}. ${manager.slice(0, 6)} . . . ${manager.slice(
+                        -4
+                      )}`}
+                    </li>
+                  ))
+                ) : (
+                  <div style={styles.spinnerDiv}>
+                    <div className="spinner"></div>
+                  </div>
+                )}
               </ul>
             </div>
           </div>
+
+          {/* ADD OPERATOR */}
           <div style={styles.columnGap}>
             <div style={styles.inputField}>
               <label htmlFor="addOperator">Add Operator:</label>
@@ -154,21 +178,35 @@ const OwnerDashboard = () => {
             </div>
             <div style={styles.listContainer}>
               <h4 className="white">Operator List:</h4>
-              <ul>
-                {operators?.map((operator, index) => (
-                  <li key={index} style={styles.allList}>
-                    {`${index}. ${operator.slice(0, 6)} . . . ${operator.slice(
-                      -4
-                    )}`}
-                  </li>
-                ))}
+              <ul style={styles.ulist}>
+                {!isLoadingOperators ? (
+                  operators?.map((operator, index) => (
+                    <li key={index} style={styles.allList}>
+                      {`${index}. ${operator.slice(
+                        0,
+                        6
+                      )} . . . ${operator.slice(-4)}`}
+                    </li>
+                  ))
+                ) : (
+                  <div style={styles.spinnerDiv}>
+                    <div className="spinner"></div>
+                  </div>
+                )}
               </ul>
             </div>
           </div>
         </div>
       )}
+
+      {
+        /********************************/
+        ////////// CHANGE SECTION ////////
+        /********************************/
+      }
       {address && (
         <div style={styles.rowContainerChange} className="containerColor-2">
+          {/* CHANGE ADMIN */}
           <div style={styles.columnGap}>
             <div style={styles.inputField}>
               <div style={styles.flexRow}>
@@ -213,6 +251,8 @@ const OwnerDashboard = () => {
               </Web3Button>
             </div>
           </div>
+
+          {/* CHANGE MANAGER */}
           <div style={styles.columnGap}>
             <div style={styles.inputField}>
               <div style={styles.flexRow}>
@@ -260,6 +300,8 @@ const OwnerDashboard = () => {
               </Web3Button>
             </div>
           </div>
+
+          {/* CHANGE OPERATOR */}
           <div style={styles.columnGap}>
             <div style={styles.inputField}>
               <div style={styles.flexRow}>
@@ -334,11 +376,13 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     width: "100%",
+    gap: "10px",
   },
   flexColumnId: {
     display: "flex",
     flexDirection: "column",
     width: "20%",
+    gap: "10px",
   },
 
   rowContainerAdd: {
@@ -411,5 +455,12 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     gap: "5px",
+  },
+  spinnerDiv: {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
 };

@@ -18,7 +18,6 @@ function CustomerBook() {
   return (
     <div id="customerBook" style={styles.content}>
       <div className="wrapper" style={styles.wrapper}>
-        <img src="/cipman.png" alt="logo" style={styles.logo} />
         <div style={styles.headerSection}>
           <h3 style={styles.h3}>CUSTOMER BOOK</h3>
           <div style={styles.legendWrapper}>
@@ -138,12 +137,6 @@ const styles = {
   },
   table: {
     backgroundColor: "#34333B",
-  },
-  logo: {
-    width: "200px",
-    aspectRatio: "17/4",
-    marginBottom: "20px",
-    filter: "hue-rotate(-8deg) saturate(150%)",
   },
   h3: {
     fontSize: "24px",

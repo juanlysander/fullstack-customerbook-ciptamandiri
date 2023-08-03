@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import {
-  useContractEvents,
   useContract,
   Web3Button,
   useAddress,
   useContractRead,
 } from "@thirdweb-dev/react";
+import SendIcon from "@mui/icons-material/Send";
 import { CONTRACT_ADDRESS } from "../../env";
 
 function ManagerDashboard() {
@@ -21,12 +21,13 @@ function ManagerDashboard() {
     setIdPaid("");
   }
 
-  const { data: events } = useContractEvents(contract, "CallFromOperator");
-  console.log(events);
-
   const { data: unpaids } = useContractRead(contract, "getUnpaidOrders");
 
-  const { data: orders } = useContractRead(contract, "getOrderById", [idCheck]);
+  const { data: orders, isLoading: isLoadingOrders } = useContractRead(
+    contract,
+    "getOrderById",
+    [idCheck]
+  );
 
   const formatCurrency = (amount) => {
     const formattedAmount = new Intl.NumberFormat("id-ID", {
@@ -43,17 +44,15 @@ function ManagerDashboard() {
     const day = dateString.slice(6, 8);
     return `${day}.${month}.${year}`;
   };
+
   return (
     <div
       id="managerDashboard"
       className="containerColor"
       style={styles.flexBox}
     >
-      <div style={styles.chatBox} className="containerColor-2">
-        Chat Box
-      </div>
       {address && (
-        <div style={styles.buttonBox}>
+        <div style={styles.containerWrapper}>
           {/* UNPAID CHECKER */}
           <div
             style={styles.unpaidCheckerContainer}
@@ -62,12 +61,17 @@ function ManagerDashboard() {
             <h3 className="white" style={styles.h3}>
               Unpaid Orders
             </h3>
-            {unpaids &&
+            {!isLoadingOrders ? (
               unpaids?.map((id) => (
                 <div key={id} style={styles.unpaidId}>
                   Id. <b>{id.toString()}</b>
                 </div>
-              ))}
+              ))
+            ) : (
+              <div style={styles.spinnerDiv}>
+                <div className="spinner"></div>
+              </div>
+            )}
           </div>
 
           {/* ORDER CHECKER */}
@@ -80,7 +84,7 @@ function ManagerDashboard() {
             </h3>
             <input
               type="number"
-              style={styles.input}
+              style={styles.inputChecker}
               className="containerColor white"
               value={idCheck}
               placeholder={"enter ID"}
@@ -139,67 +143,69 @@ function ManagerDashboard() {
             )}
           </div>
 
-          {/* BUTTON STATUS */}
-          <div style={styles.buttonContainer}>
-            <div style={styles.inputContainer}>
-              <label htmlFor="id" className="white">
-                <b>Approve Order State</b>
-              </label>
-              <input
-                type="number"
-                className="containerColor-2 white"
-                value={id}
-                style={styles.input}
-                placeholder="enter ID"
-                onChange={(e) => setId(e.target.value)}
-              />
+          <div style={styles.buttonWrapper}>
+            {/* BUTTON STATUS */}
+            <div style={styles.buttonContainer}>
+              <div style={styles.inputContainer}>
+                <label htmlFor="id" className="white">
+                  <b>Approve Order State</b>
+                </label>
+                <input
+                  type="number"
+                  className="containerColor-2 white"
+                  value={id}
+                  style={styles.input}
+                  placeholder="enter ID"
+                  onChange={(e) => setId(e.target.value)}
+                />
+              </div>
+              <div style={styles.circle} className="red outer">
+                <Web3Button
+                  contractAddress={CONTRACT_ADDRESS}
+                  action={(contract) => {
+                    contract.call("approveMark", [id]);
+                  }}
+                  onSuccess={() => {
+                    resetForm();
+                  }}
+                  onError={(error) => console.log(error)}
+                  style={styles.blankButton}
+                >
+                  DONE
+                </Web3Button>
+              </div>
             </div>
-            <div style={styles.circle} className="red outer">
-              <Web3Button
-                contractAddress={CONTRACT_ADDRESS}
-                action={(contract) => {
-                  contract.call("approveMark", [id]);
-                }}
-                onSuccess={() => {
-                  resetForm();
-                }}
-                onError={(error) => console.log(error)}
-                style={styles.blankButton}
-              >
-                DONE
-              </Web3Button>
-            </div>
-          </div>
 
-          {/* BUTTON PAID */}
-          <div style={styles.buttonContainer}>
-            <div style={styles.inputContainer}>
-              <label htmlFor="id" className="white">
-                <b>Mark As Paid</b>
-              </label>
-              <input
-                type="number"
-                className="containerColor-2 white"
-                value={idPaid}
-                style={styles.input}
-                placeholder="enter ID"
-                onChange={(e) => setIdPaid(e.target.value)}
-              />
-            </div>
-            <div style={styles.circle} className="red outer">
-              <Web3Button
-                contractAddress={CONTRACT_ADDRESS}
-                action={(contract) => {
-                  contract.call("approvePaid", [idPaid]);
-                }}
-                onSuccess={() => {
-                  resetForm();
-                }}
-                onError={(error) => console.log(error)}
-                style={styles.blankButton}
-              >
-                PAID
-              </Web3Button>
+            {/* BUTTON PAID */}
+            <div style={styles.buttonContainer}>
+              <div style={styles.inputContainer}>
+                <label htmlFor="id" className="white">
+                  <b>Mark As Paid</b>
+                </label>
+                <input
+                  type="number"
+                  className="containerColor-2 white"
+                  value={idPaid}
+                  style={styles.input}
+                  placeholder="enter ID"
+                  onChange={(e) => setIdPaid(e.target.value)}
+                />
+              </div>
+              <div style={styles.circle} className="red outer">
+                <Web3Button
+                  contractAddress={CONTRACT_ADDRESS}
+                  action={(contract) => {
+                    contract.call("approvePaid", [idPaid]);
+                  }}
+                  onSuccess={() => {
+                    resetForm();
+                  }}
+                  onError={(error) => console.log(error)}
+                  style={styles.blankButton}
+                >
+                  PAID
+                </Web3Button>
+              </div>
             </div>
           </div>
         </div>
@@ -219,21 +225,11 @@ const styles = {
     gap: "30px",
     width: "100%",
     height: "100vh",
-    padding: "50px",
+    padding: "30px",
   },
-  chatBox: {
-    width: "100%",
-    height: "30%",
-    color: "white",
-    borderRadius: "6px",
-    padding: "20px",
+  containerWrapper: {
     display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-end",
-  },
-  buttonBox: {
-    display: "flex",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "flex-start",
     gap: "20px",
     width: "100%",
@@ -242,7 +238,7 @@ const styles = {
   h3: {
     fontSize: "17px",
     width: "100%",
-    textAlign: "left",
+    textAlign: "center",
   },
   unpaidCheckerContainer: {
     borderRadius: "6px",
@@ -252,7 +248,7 @@ const styles = {
     alignItems: "center",
     justifyContent: "flex-start",
     gap: "5px",
-    width: "120px",
+    width: "200px",
     height: "100%",
     overflow: "hidden",
     overflowY: "scroll",
@@ -270,7 +266,7 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     gap: "10px",
-    width: "calc(100% - 660px)",
+    width: "350px",
     height: "100%",
     overflow: "hidden",
     overflowY: "scroll",
@@ -289,8 +285,12 @@ const styles = {
     justifyContent: "flex-start",
     alignItems: "center",
     gap: "30px",
-    width: "260px",
-    height: "400px",
+    width: "300px",
+    height: "330px",
+  },
+  buttonWrapper: {
+    display: "flex",
+    flexDirection: "column",
   },
   inputContainer: {
     display: "flex",
@@ -307,6 +307,14 @@ const styles = {
     border: "none",
     width: "140px",
   },
+  inputChecker: {
+    padding: "10px 15px",
+    borderRadius: "10px",
+    fontSize: "14px",
+    outline: "none",
+    border: "none",
+    width: "100%",
+  },
   circle: {
     width: "200px",
     height: "200px",
@@ -322,5 +330,12 @@ const styles = {
     color: "white",
     fontWeight: "bold",
     fontSize: "40px",
+  },
+  spinnerDiv: {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
 };

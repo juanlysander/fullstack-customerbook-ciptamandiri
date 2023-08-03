@@ -11,20 +11,18 @@ function Sidebar() {
     <div id="sideBar" style={styles.sideBar} className="containerColor-2">
       <div style={styles.sideBarWrapper}>
         <div id="stockLogo" style={styles.userContainer}>
-          <img src="/juju2.jpg" style={styles.userPhoto} />
-          <div style={styles.userInfo}>
-            <h2 style={styles.userName} className="white">
-              {`Juan`}
-            </h2>
-            <div className="connect">
-              <ConnectWallet
-                style={styles.walletButton}
-                dropdownPosition={{
-                  side: "bottom",
-                  align: "center",
-                }}
-              />
-            </div>
+          <img src="/cipman.png" style={styles.userPhoto} />
+          <div className="connect">
+            <ConnectWallet
+              style={styles.walletButton}
+              dropdownPosition={{
+                side: "bottom",
+                align: "center",
+              }}
+              auth={{
+                loginOptional: false,
+              }}
+            />
           </div>
         </div>
         <div id="layouts" style={styles.navigation}>
@@ -86,11 +84,11 @@ const styles = {
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    gap: "10px",
+    gap: "40px",
   },
   userPhoto: {
-    width: "100px",
-    borderRadius: "50%",
+    width: "210px",
+    filter: "hue-rotate(-8deg) saturate(150%)",
   },
   userInfo: {
     gap: "7px",
