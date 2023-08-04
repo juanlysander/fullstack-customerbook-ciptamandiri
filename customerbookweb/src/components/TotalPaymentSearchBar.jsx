@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useContract, useContractRead } from "@thirdweb-dev/react";
-import { CONTRACT_ADDRESS } from "../../env";
+import { CONTRACT_ADDRESS } from "../addresses";
 
 function TotalPaymentSearchBar() {
   const [id, setId] = useState("");

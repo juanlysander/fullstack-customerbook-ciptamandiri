@@ -1,7 +1,6 @@
 import { useContract, useContractRead } from "@thirdweb-dev/react";
 import React from "react";
-import { CONTRACT_ADDRESS } from "../../env";
-import { Spinner } from "@chakra-ui/react";
+import { CONTRACT_ADDRESS } from "../addresses";
 
 const OrderList = () => {
   const formatCurrency = (amount) => {
@@ -49,7 +48,11 @@ const OrderList = () => {
               <th style={styles.specs}>Specs</th>
               <th style={styles.qty}>Qty</th>
               <th style={styles.total}>Total</th>
-              <th style={styles.dp}>DP</th>
+              <th style={styles.dp}>
+                Down
+                <br />
+                Payment
+              </th>
               <th style={styles.state}>Status</th>
               <th style={styles.paid}>Paid</th>
             </tr>
@@ -65,7 +68,7 @@ const OrderList = () => {
                   <td style={styles.idData}>{index + 1}</td>
                   <td style={styles.customerData}>{order.orderOwner}</td>
                   <td style={styles.dateData}>
-                    {formatDate(order.orderDate.toString())}
+                    {formatUnixTimestamp(order.orderDate.toString())}
                   </td>
                   <td style={styles.deadlineData}>
                     {formatDate(order.deadlineDate.toString())}
@@ -136,8 +139,7 @@ const styles = {
     overflow: "hidden",
     position: "sticky",
     top: 0,
-    padding: "0px 6px 0px 0px",
-    zIndex: 1,
+    padding: "0px 3px 0px 0px",
   },
   bodyWrapper: {
     height: "calc(100vh - 400px)",
@@ -157,7 +159,7 @@ const styles = {
     padding: "15px 0px",
     fontSize: "14px",
     borderLeft: "none",
-    borderRadius: "6px",
+    borderRadius: "3px",
   },
   customer: {
     width: "7%",
@@ -166,7 +168,7 @@ const styles = {
     padding: "15px 0px",
     fontSize: "14px",
     borderLeft: "none",
-    borderRadius: "6px",
+    borderRadius: "3px",
   },
   date: {
     width: "8%",
@@ -174,7 +176,7 @@ const styles = {
     border: "1px solid #25242a",
     padding: "15px 0px",
     fontSize: "14px",
-    borderRadius: "6px",
+    borderRadius: "3px",
   },
   deadline: {
     width: "8%",
@@ -182,7 +184,7 @@ const styles = {
     border: "1px solid #25242a",
     padding: "15px 0px",
     fontSize: "14px",
-    borderRadius: "6px",
+    borderRadius: "3px",
   },
   name: {
     width: "12%",
@@ -190,7 +192,7 @@ const styles = {
     border: "1px solid #25242a",
     padding: "15px 0px",
     fontSize: "14px",
-    borderRadius: "6px",
+    borderRadius: "3px",
   },
   specs: {
     width: "17%",
@@ -198,7 +200,7 @@ const styles = {
     border: "1px solid #25242a",
     padding: "15px 0px",
     fontSize: "14px",
-    borderRadius: "6px",
+    borderRadius: "3px",
   },
   qty: {
     width: "6%",
@@ -206,7 +208,7 @@ const styles = {
     border: "1px solid #25242a",
     padding: "15px 0px",
     fontSize: "14px",
-    borderRadius: "6px",
+    borderRadius: "3px",
   },
   total: {
     width: "11%",
@@ -214,7 +216,7 @@ const styles = {
     border: "1px solid #25242a",
     padding: "15px 0px",
     fontSize: "14px",
-    borderRadius: "6px",
+    borderRadius: "3px",
   },
   dp: {
     width: "10%",
@@ -222,7 +224,7 @@ const styles = {
     border: "1px solid #25242a",
     padding: "15px 0px",
     fontSize: "14px",
-    borderRadius: "6px",
+    borderRadius: "3px",
   },
   state: {
     width: "7%",
@@ -230,7 +232,7 @@ const styles = {
     border: "1px solid #25242a",
     padding: "15px 0px",
     fontSize: "14px",
-    borderRadius: "6px",
+    borderRadius: "3px",
   },
   paid: {
     width: "7%",
@@ -239,7 +241,7 @@ const styles = {
     padding: "15px 0px",
     fontSize: "14px",
     borderRight: "none",
-    borderRadius: "6px",
+    borderRadius: "3px",
   },
   idData: {
     padding: "8px 4px",
@@ -294,12 +296,14 @@ const styles = {
     fontSize: "14px",
     color: "#79ff40",
     borderBottom: "1px solid #4a4a4a",
+    textAlign: "right",
   },
   dpData: {
     width: "10%",
     padding: "8px 4px",
     fontSize: "14px",
     borderBottom: "1px solid #4a4a4a",
+    textAlign: "right",
   },
   stateData: {
     width: "7%",

@@ -168,7 +168,7 @@ h5 {
   ); /*warna kacanya*/
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border-radius: 10px;
+  border-radius: 3px;
   border: 0px solid rgba(255, 255, 255, 0.18);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
@@ -189,4 +189,18 @@ h5 {
 .pFont {
   font-size: 15px;
   font-weight: 300;
+}
+
+.f-12 {
+  font-size: 12px;
+}
+.f-14 {
+  font-size: 14px;
+}
+.f-16 {
+  font-size: 16px;
+}
+
+.logBox {
+  font-family: "Courier New", Courier, monospace;
 }

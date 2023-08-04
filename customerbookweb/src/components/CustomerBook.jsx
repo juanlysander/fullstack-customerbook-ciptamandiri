@@ -106,11 +106,14 @@ const styles = {
     height: "100vh",
     display: "flex",
     flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
     padding: "30px",
     overflow: "hidden",
   },
   wrapper: {
     gap: "20px",
+    maxWidth: "1440px",
   },
   headerSection: {
     display: "flex",

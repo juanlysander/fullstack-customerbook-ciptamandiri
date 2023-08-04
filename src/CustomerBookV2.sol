@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-contract CustomerBook {
+contract CustomerBookV2 {
     error CustomerBook__HigherDownPaymentValue();
     error CustomerBook__IsNotOwner();
-    error CustomerBook__IsNotAuthorizedPerson();
     error CustomerBook__ZeroAddressGiven();
 
     enum OrderStatus {
@@ -39,6 +38,7 @@ contract CustomerBook {
     address[] private admins;
     address[] private operators;
     address[] private managers;
+    string[] private callMessagesFromOperator;
 
     event OrderCreated(
         uint128 indexed orderId,
@@ -75,8 +75,6 @@ contract CustomerBook {
         bool isPaid
     );
 
-    event CallFromOperator(uint128 indexed orderId, string message);
-
     modifier onlyOwner() {
         if (msg.sender != owner) {
             revert CustomerBook__IsNotOwner();
@@ -92,9 +90,7 @@ contract CustomerBook {
                 break;
             }
         }
-        if (!isManager || msg.sender != owner) {
-            revert CustomerBook__IsNotAuthorizedPerson();
-        }
+        require(isManager || msg.sender == owner, "not authorized person");
         _;
     }
 
@@ -106,9 +102,7 @@ contract CustomerBook {
                 break;
             }
         }
-        if (!isAdmin || msg.sender != owner) {
-            revert CustomerBook__IsNotAuthorizedPerson();
-        }
+        require(isAdmin || msg.sender == owner, "not authorized person");
         _;
     }
 
@@ -120,9 +114,7 @@ contract CustomerBook {
                 break;
             }
         }
-        if (!isOperator || msg.sender != owner) {
-            revert CustomerBook__IsNotAuthorizedPerson();
-        }
+        require(isOperator || msg.sender == owner, "not authorized person");
         _;
     }
 
@@ -304,8 +296,38 @@ contract CustomerBook {
         emit OrderDeleted(orderId);
     }
 
+    function _uintToString(
+        uint256 _value
+    ) private pure returns (string memory) {
+        if (_value == 0) {
+            return "0";
+        }
+        uint256 temp = _value;
+        uint256 digits;
+        while (temp != 0) {
+            digits++;
+            temp /= 10;
+        }
+        bytes memory buffer = new bytes(digits);
+        while (_value != 0) {
+            digits -= 1;
+            buffer[digits] = bytes1(uint8(48 + uint256(_value % 10)));
+            _value /= 10;
+        }
+        return string(buffer);
+    }
+
     function callToMark(uint128 _orderId) public onlyOperator {
-        emit CallFromOperator(_orderId, "is done, need to be Marked");
+        require(_orderId <= orderId, "Invalid order ID");
+        string memory orderIdStr = _uintToString(_orderId);
+        string memory message = string(
+            abi.encodePacked(
+                "Order Id ",
+                orderIdStr,
+                " is done, ready to be approved"
+            )
+        );
+        callMessagesFromOperator.push(message);
     }
 
     function approveMark(uint256 _orderId) public onlyManager {
@@ -431,5 +453,13 @@ contract CustomerBook {
 
     function getOperators() public view returns (address[] memory) {
         return operators;
+    }
+
+    function getCallMessagesFromOperator()
+        public
+        view
+        returns (string[] memory)
+    {
+        return callMessagesFromOperator;
     }
 }

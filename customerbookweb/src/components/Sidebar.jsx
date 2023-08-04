@@ -3,6 +3,7 @@ import { ConnectWallet } from "@thirdweb-dev/react";
 import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
 import PrecisionManufacturingOutlinedIcon from "@mui/icons-material/PrecisionManufacturingOutlined";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import MailIcon from "@mui/icons-material/Mail";
 import LockIcon from "@mui/icons-material/Lock";
 import { Link } from "react-router-dom";
 
@@ -12,6 +13,8 @@ function Sidebar() {
       <div style={styles.sideBarWrapper}>
         <div id="stockLogo" style={styles.userContainer}>
           <img src="/cipman.png" style={styles.userPhoto} />
+
+          {/* Wallet */}
           <div className="connect">
             <ConnectWallet
               style={styles.walletButton}
@@ -25,7 +28,9 @@ function Sidebar() {
             />
           </div>
         </div>
+
         <div id="layouts" style={styles.navigation}>
+          {/* Admin */}
           <div style={styles.userSection} className="wrapper">
             <p style={styles.lead}>Admin Section</p>
             <Link to="/" style={styles.links} className="hover">
@@ -33,6 +38,8 @@ function Sidebar() {
               <p className="pFont white">Customer Books</p>
             </Link>
           </div>
+
+          {/* Operator */}
           <div style={styles.userSection} className="wrapper">
             <p style={styles.lead}>Operator Section</p>
             <Link
@@ -44,18 +51,26 @@ function Sidebar() {
               <p className="pFont white">Operator Dashboard</p>
             </Link>
           </div>
+
+          {/* Manager */}
           <div style={styles.userSection} className="wrapper">
             <p style={styles.lead}>Manager Section</p>
             <Link to="/managerDashboard" style={styles.links} className="hover">
               <ManageAccountsIcon className="white" />
               <p className="pFont white">Manager Dashboard</p>
             </Link>
+            <Link to="/managerChatBox" style={styles.links} className="hover">
+              <MailIcon className="white" />
+              <p className="pFont white"> Chat Box</p>
+            </Link>
           </div>
+
+          {/* Owner */}
           <div style={styles.userSection} className="wrapper">
             <p style={styles.lead}>Owner Section</p>
             <Link to="/ownerDashboard" style={styles.links} className="hover">
               <LockIcon className="white" />
-              <p className="pFont white">Owner Dashboard</p>
+              <p className="pFont white">Acc Authorization</p>
             </Link>
           </div>
         </div>
@@ -105,7 +120,7 @@ const styles = {
     padding: "12px 20px",
     color: "white",
     fontSize: "12px",
-    borderRadius: "10px",
+    borderRadius: "3px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",

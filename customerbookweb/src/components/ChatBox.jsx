@@ -1,84 +1,161 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useContract, useContractRead } from "@thirdweb-dev/react";
+import { CHAT_CONTRACT_ADDRESS } from "../addresses";
 import SendIcon from "@mui/icons-material/Send";
 
-function ChatBox() {
+function ChatBox({ sender }) {
   const [messages, setMessages] = useState([
     {
       sender: "Manager",
-      content: "Hey Operator, please check ID 3",
+      content: "tes manager message",
     },
     {
       sender: "Operator",
-      content: "Ay.. Ay.. Captain!!",
+      content: "tes",
     },
   ]);
+  const logBoxContainerRef = useRef(null);
+
+  const scrollToBottom = () => {
+    if (logBoxContainerRef.current) {
+      logBoxContainerRef.current.scrollTop =
+        logBoxContainerRef.current.scrollHeight;
+    }
+  };
 
   const handleMessageSend = () => {
-    // Get the message input value
     const inputMessage = document.getElementById("messageInput").value;
     if (inputMessage.trim() !== "") {
-      // Append the new message to the messages state
       setMessages((prevMessages) => [
         ...prevMessages,
         {
-          sender: "Manager",
+          sender: sender,
           content: inputMessage,
         },
       ]);
-      // Clear the input field after sending the message
       document.getElementById("messageInput").value = "";
     }
   };
 
   const handleKeyDown = (event) => {
-    // Check if the Enter key (key code 13) is pressed
     if (event.keyCode === 13) {
       handleMessageSend();
     }
   };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   return (
     <>
-      {/* CHATBOX */}
-      <div style={styles.chatBox} className="containerColor-2">
-        <div style={styles.messageLogBox} className="containerColor">
-          {messages.map((message, index) => (
-            <>
-              {message.sender === "Manager" ? (
-                // Render Manager message
-                <div style={styles.messageBox} key={index}>
-                  <div style={styles.managerImage}>{message.sender[0]}</div>
-                  <p style={styles.message} className="containerColor-2">
-                    {message.content}
-                  </p>
-                </div>
-              ) : (
-                // Render Operator message
-                <div style={styles.messageBoxOfSender} key={index}>
+      {sender === "Manager" ? (
+        <div style={styles.chatBox} className="containerColor-2">
+          <div
+            style={styles.messageLogBox}
+            className="containerColor"
+            ref={logBoxContainerRef}
+          >
+            {messages.map((message, index) => (
+              <>
+                <div
+                  key={index}
+                  style={
+                    message.sender === "Manager"
+                      ? styles.messageBoxOnRight
+                      : styles.messageBoxOnLeft
+                  }
+                >
+                  <div
+                    style={
+                      message.sender === "Manager"
+                        ? styles.managerImage
+                        : styles.operatorImage
+                    }
+                  >
+                    {message.sender[0]}
+                  </div>
                   <p
-                    style={styles.messageOfSender}
+                    style={
+                      message.sender === "Manager"
+                        ? styles.messageOnRight
+                        : styles.messageOnLeft
+                    }
                     className="containerColor-2"
                   >
                     {message.content}
                   </p>
-                  <div style={styles.operatorImage}>{message.sender[0]}</div>
                 </div>
-              )}
-            </>
-          ))}
-        </div>
+              </>
+            ))}
+          </div>
 
-        <div style={styles.chatInputDiv}>
-          <input
-            type="text"
-            placeholder="send message.."
-            style={styles.chatInput}
-            className="containerColor white"
-            id="messageInput"
-            onKeyDown={handleKeyDown}
-          />
-          <SendIcon onClick={handleMessageSend} />
+          <div style={styles.chatInputDiv}>
+            <input
+              type="text"
+              placeholder="send message.."
+              style={styles.chatInput}
+              className="containerColor white"
+              id="messageInput"
+              onKeyDown={handleKeyDown}
+            />
+            <SendIcon onClick={handleMessageSend} />
+          </div>
         </div>
-      </div>
+      ) : (
+        <div style={styles.chatBoxOperator} className="containerColor-2">
+          <div
+            style={styles.messageLogBoxOperator}
+            className="containerColor"
+            ref={logBoxContainerRef}
+          >
+            {messages.map((message, index) => (
+              <>
+                <div
+                  key={index}
+                  style={
+                    message.sender === "Operator"
+                      ? styles.messageBoxOnRight
+                      : styles.messageBoxOnLeft
+                  }
+                >
+                  <div
+                    style={
+                      message.sender === "Manager"
+                        ? styles.managerImage
+                        : styles.operatorImage
+                    }
+                  >
+                    {message.sender[0]}
+                  </div>
+                  <p
+                    style={
+                      message.sender === "Operator"
+                        ? styles.messageOnRight
+                        : styles.messageOnLeft
+                    }
+                    className="containerColor-2"
+                  >
+                    {message.content}
+                  </p>
+                </div>
+              </>
+            ))}
+          </div>
+
+          <div style={styles.chatInputDiv}>
+            <input
+              type="text"
+              placeholder="send message.."
+              style={styles.chatInput}
+              className="containerColor white"
+              id="messageInput"
+              onKeyDown={handleKeyDown}
+            />
+            <SendIcon onClick={handleMessageSend} />
+          </div>
+        </div>
+      )}
     </>
   );
 }
@@ -89,27 +166,50 @@ const styles = {
   chatBox: {
     width: "100%",
     height: "100%",
-    maxHeight: "calc(100% - 380px)",
     color: "white",
-    borderRadius: "6px",
+    borderRadius: "3px",
     padding: "15px",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "flex-end",
+    justifyContent: "end",
     gap: "10px",
   },
   messageLogBox: {
     padding: "15px",
-    borderRadius: "6px",
+    borderRadius: "3px",
     display: "flex",
     flexDirection: "column",
-    alignItems: "flex-start",
-    justifyContent: "flex-end",
+    alignItems: "start",
+    justifyContent: "start",
     gap: "5px",
     overflow: "hidden",
     overflowY: "scroll",
     width: "100%",
-    height: "360px",
+    height: "100%",
+  },
+  chatBoxOperator: {
+    width: "100%",
+    height: "calc(100% - 360px)",
+    color: "white",
+    borderRadius: "3px",
+    padding: "15px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "end",
+    gap: "10px",
+  },
+  messageLogBoxOperator: {
+    padding: "15px",
+    borderRadius: "3px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "start",
+    justifyContent: "start",
+    gap: "5px",
+    overflow: "hidden",
+    overflowY: "scroll",
+    width: "100%",
+    height: "100%",
   },
   managerImage: {
     borderRadius: "100px",
@@ -129,37 +229,42 @@ const styles = {
     display: "grid",
     placeItems: "center",
   },
-  messageBox: {
+  messageBoxOnLeft: {
     display: "flex",
-    alignItems: "flex-end",
-    justifyContent: "flex-start",
+    alignItems: "end",
+    justifyContent: "start",
     gap: "10px",
     width: "100%",
   },
-  messageBoxOfSender: {
+  messageBoxOnRight: {
     display: "flex",
-    alignItems: "flex-end",
-    justifyContent: "flex-end",
+    flexDirection: "row-reverse",
+    alignItems: "end",
+    justifyContent: "end",
     gap: "10px",
     width: "100%",
   },
-  message: {
+  messageOnLeft: {
     padding: "10px",
     borderRadius: "10px 10px 10px 0px",
+    maxWidth: "250px",
+    flex: "wrap",
   },
-  messageOfSender: {
+  messageOnRight: {
     padding: "10px",
     borderRadius: "10px 10px 0px 10px",
+    maxWidth: "250px",
+    flex: "wrap",
   },
   chatInputDiv: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "start",
     gap: "15px",
   },
   chatInput: {
-    padding: "10px 15px",
-    borderRadius: "6px",
+    padding: "15px 15px",
+    borderRadius: "3px",
     fontSize: "14px",
     outline: "none",
     border: "none",

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import { Web3Button } from "@thirdweb-dev/react";
-import { CONTRACT_ADDRESS } from "../../env";
+import { CONTRACT_ADDRESS } from "../addresses";
 
 function DeleteModal({ closeModal }) {
   const [id, setId] = useState("");
@@ -9,6 +9,20 @@ function DeleteModal({ closeModal }) {
   function resetForm() {
     setId("");
   }
+
+  useEffect(() => {
+    const handleEscKeyPress = (event) => {
+      if (event.key === "Escape") {
+        closeModal(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscKeyPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleEscKeyPress);
+    };
+  }, [closeModal]);
 
   return (
     <div style={styles.backgroundBlur}>
@@ -32,14 +46,18 @@ function DeleteModal({ closeModal }) {
             </div>
             <Web3Button
               contractAddress={CONTRACT_ADDRESS}
-              action={(contract) => {
-                contract.call("deleteOrder", [id]);
+              action={async (contract) => {
+                await contract.call("deleteOrder", [id]);
               }}
               onSuccess={() => {
                 resetForm();
                 closeModal(false);
+                alert("Order Deleted!");
               }}
-              onError={(error) => console.log(error)}
+              onError={(error) => {
+                alert("Something went wrong!");
+                console.log(error);
+              }}
               style={styles.deleteButton}
             >
               Delete Order
@@ -62,6 +80,7 @@ const styles = {
     top: "0",
     left: "0",
     filter: "blur(40%)",
+    zIndex: "1",
   },
   flex: {
     display: "flex",
@@ -75,7 +94,7 @@ const styles = {
   },
   container: {
     backgroundColor: "#1e1e21",
-    borderRadius: "5px",
+    borderRadius: "3px",
     padding: "30px",
     width: "450px",
     height: "200px",
@@ -108,19 +127,19 @@ const styles = {
   },
   inputId: {
     padding: "8px 20px",
-    borderRadius: "5px",
+    borderRadius: "3px",
     outline: "none",
     width: "100px",
   },
   input: {
     padding: "5px 10px",
-    borderRadius: "5px",
+    borderRadius: "3px",
     outline: "none",
   },
   deleteButton: {
     padding: "10px 20px",
     backgroundColor: "crimson",
-    borderRadius: "5px",
+    borderRadius: "3px",
     color: "white",
     fontSize: "14px",
     width: "150px",

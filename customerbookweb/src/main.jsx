@@ -5,7 +5,7 @@ import { ThirdwebProvider } from "@thirdweb-dev/react";
 import { Sepolia } from "@thirdweb-dev/chains";
 import "./styles/globals.css";
 import { BrowserRouter } from "react-router-dom";
-import { CLIENT_ID } from "../env";
+import { CLIENT_ID } from "./addresses";
 
 const container = document.getElementById("root");
 const root = createRoot(container);

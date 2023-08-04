@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import * as React from "react";
+import { useState, useEffect } from "react";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import { Web3Button } from "@thirdweb-dev/react";
-import { CONTRACT_ADDRESS } from "../../env";
+import { CONTRACT_ADDRESS } from "../addresses";
 
 function AddModal({ closeModal }) {
   const [customer, setCustomer] = useState("");
-  const [date, setDate] = useState("");
   const [deadline, setDeadline] = useState("");
   const [name, setName] = useState("");
   const [specs, setSpecs] = useState("");
@@ -15,7 +15,6 @@ function AddModal({ closeModal }) {
 
   function resetForm() {
     setCustomer("");
-    setDate("");
     setDeadline("");
     setName("");
     setSpecs("");
@@ -23,6 +22,20 @@ function AddModal({ closeModal }) {
     setTotal("");
     setDownPayment("");
   }
+
+  useEffect(() => {
+    const handleEscKeyPress = (event) => {
+      if (event.key === "Escape") {
+        closeModal(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscKeyPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleEscKeyPress);
+    };
+  }, [closeModal]);
 
   return (
     <div style={styles.backgroundBlur}>
@@ -44,17 +57,6 @@ function AddModal({ closeModal }) {
                 placeholder="Asep ..."
                 value={customer}
                 onChange={(e) => setCustomer(e.target.value)}
-                style={styles.input}
-              />
-            </div>
-            <div style={styles.unitContainer}>
-              <label htmlFor="date">Date:</label>
-              <input
-                type="text"
-                id="date"
-                placeholder="20230709"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
                 style={styles.input}
               />
             </div>
@@ -126,10 +128,9 @@ function AddModal({ closeModal }) {
             </div>
             <Web3Button
               contractAddress={CONTRACT_ADDRESS}
-              action={(contract) => {
-                contract.call("addOrder", [
+              action={async (contract) => {
+                await contract.call("addOrder", [
                   customer,
-                  date,
                   deadline,
                   name,
                   specs,
@@ -141,8 +142,12 @@ function AddModal({ closeModal }) {
               onSuccess={() => {
                 resetForm();
                 closeModal(false);
+                alert("Success adding new order!");
               }}
-              onError={(error) => console.log(error)}
+              onError={(error) => {
+                console.log(error);
+                alert("Something went wrong");
+              }}
               style={styles.addOrderButton}
             >
               Add Order
@@ -165,6 +170,7 @@ const styles = {
     top: "0",
     left: "0",
     filter: "blur(40%)",
+    zIndex: "1",
   },
   flex: {
     display: "flex",
@@ -177,10 +183,10 @@ const styles = {
   },
   container: {
     backgroundColor: "#1e1e21",
-    borderRadius: "5px",
+    borderRadius: "3px",
     padding: "30px",
     width: "450px",
-    height: "650px",
+    height: "fit-content",
     position: "fixed",
     top: "50%",
     left: "50%",
@@ -210,13 +216,13 @@ const styles = {
   },
   input: {
     padding: "5px 10px",
-    borderRadius: "5px",
+    borderRadius: "3px",
     outline: "none",
   },
   addOrderButton: {
     padding: "10px 20px",
     backgroundColor: "crimson",
-    borderRadius: "5px",
+    borderRadius: "3px",
     color: "white",
     fontSize: "14px",
     width: "150px",

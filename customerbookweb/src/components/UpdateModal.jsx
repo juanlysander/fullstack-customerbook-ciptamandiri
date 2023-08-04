@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import { Web3Button } from "@thirdweb-dev/react";
-import { CONTRACT_ADDRESS } from "../../env";
+import { CONTRACT_ADDRESS } from "../addresses";
 
 function UpdateModal({ closeModal }) {
   const [id, setId] = useState("");
@@ -25,6 +25,20 @@ function UpdateModal({ closeModal }) {
     setTotal("");
     setDownPayment("");
   }
+
+  useEffect(() => {
+    const handleEscKeyPress = (event) => {
+      if (event.key === "Escape") {
+        closeModal(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscKeyPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleEscKeyPress);
+    };
+  }, [closeModal]);
 
   return (
     <div style={styles.backgroundBlur}>
@@ -57,17 +71,6 @@ function UpdateModal({ closeModal }) {
                 placeholder="Asep ..."
                 value={customer}
                 onChange={(e) => setCustomer(e.target.value)}
-                style={styles.input}
-              />
-            </div>
-            <div style={styles.unitContainer}>
-              <label htmlFor="date">Date:</label>
-              <input
-                type="text"
-                id="date"
-                placeholder="20230709"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
                 style={styles.input}
               />
             </div>
@@ -139,11 +142,10 @@ function UpdateModal({ closeModal }) {
             </div>
             <Web3Button
               contractAddress={CONTRACT_ADDRESS}
-              action={(contract) => {
-                contract.call("updateOrder", [
+              action={async (contract) => {
+                await contract.call("updateOrder", [
                   id,
                   customer,
-                  date,
                   deadline,
                   name,
                   specs,
@@ -155,8 +157,12 @@ function UpdateModal({ closeModal }) {
               onSuccess={() => {
                 resetForm();
                 closeModal(false);
+                alert("Order Updated!");
               }}
-              onError={(error) => console.log(error)}
+              onError={(error) => {
+                console.log(error);
+                alert("Something went wrong!");
+              }}
               style={styles.updateOrderButton}
             >
               Update Order
@@ -179,6 +185,7 @@ const styles = {
     top: "0",
     left: "0",
     filter: "blur(40%)",
+    zIndex: "1",
   },
   flex: {
     display: "flex",
@@ -192,7 +199,7 @@ const styles = {
   },
   container: {
     backgroundColor: "#1e1e21",
-    borderRadius: "5px",
+    borderRadius: "3px",
     padding: "30px",
     width: "450px",
     height: "650px",
@@ -225,19 +232,19 @@ const styles = {
   },
   inputId: {
     padding: "8px 20px",
-    borderRadius: "5px",
+    borderRadius: "3px",
     outline: "none",
     width: "100px",
   },
   input: {
     padding: "5px 10px",
-    borderRadius: "5px",
+    borderRadius: "3px",
     outline: "none",
   },
   updateOrderButton: {
     padding: "10px 20px",
     backgroundColor: "crimson",
-    borderRadius: "5px",
+    borderRadius: "3px",
     color: "white",
     fontSize: "14px",
     width: "150px",
