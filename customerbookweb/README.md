@@ -1,6 +1,11 @@
-# CustomerBook Smart Contract
+# README
 
 The CustomerBook smart contract is a decentralized application (DApp) designed to manage orders and payments for Cipta Mandiri Printing Business. It allows users to create, update, and delete orders, and tracks their status through various stages of completion. The smart contract is built on the Ethereum blockchain and is implemented in Solidity version 0.8.18.
+
+#### Private Keys
+use this private key to act as Owner and grant access to all features. See Features below
+`9547ea0525129fe30bb94719608629c75ff9f6104117b9d6a2501724580cb18a`
+
 
 ## Features
 
@@ -25,41 +30,26 @@ The smart contract provides several getter functions to retrieve data about orde
 7. Event Logging
 The smart contract logs various events, such as order creation, order modification, order deletion, order readiness for shipping, and calls from operators.
 
+
 ## Getting Started
-To interact with the CustomerBook smart contract, you will need an Ethereum wallet such as MetaMask. Ensure that you are connected to the correct Ethereum network (e.g., Ropsten, Rinkeby, or Mainnet) before proceeding.
+To interact with the CustomerBook smart contract, you will need an Ethereum wallet such as MetaMask. Ensure that you are connected to the Sepolia test network, if you dont have the network, follow this guide
+[Sepolia](https://www.datawallet.com/crypto/add-sepolia-to-metamask)
 
 Here are some examples of interactions you can perform:
 
-  Call the addOrder function with the required parameters.
-  Update an existing order:
+1. First of all, you can set other wallets to become administrators, operators, or managers in the user authorization section. These features can only be accessed by the owner (using the private key mentioned above).
 
-  Call the updateOrder function with the order ID and updated parameters.
-  Delete an order:
+2. You can add and update orders in the customer book section. The delete function can only be accessed by the Owner.
 
-  Call the deleteOrder function with the order ID.
-  Approve an order for production:
+3. The data inputted is immutable. The owner and admin can change the order, but there will always be an event emitted when some order is changed. Even if you delete some orders, the trace of the ID will still exist, but with empty information.
 
-  Call the approveMark function with the order ID.
-  Mark an order as paid:
+4. In the Manager dashboard, you can approve the state to change the order status by entering the order ID. You can also mark an order as paid by entering the order ID in the second red button.
 
-  Call the approvePaid function with the order ID.
-  Retrieve order details:
+5. There are some order checkers in the Manager dashboard, as well as a list of unpaid orders. On the top section of the Manager dashboard, there is a large log box that returns messages from the operator. In this case, the operator cannot change the order status; only the manager can do it. This ensures that orders are always checked by the manager when called by the operator via the log box.
 
-  Call the getOrderById function with the order ID.
-  Retrieve all orders:
+6. In the Operator dashboard, there is an order checker that allows entering the same ID as in the Manager dashboard, as well as a call button that emits a message to the manager's log box, as mentioned in point no. 5.
 
-  Call the getAllOrders function to get an array of all orders.
-  Retrieve unpaid orders:
-
-  Call the getUnpaidOrders function to get an array of unpaid order IDs.
-  Retrieve admins, managers, and operators:
-
-  Call the getAdmins, getManagers, or getOperators function to get an array of addresses.
-
-## Disclaimer
-Please note that this README provides a high-level overview of the CustomerBook smart contract. It is essential to review the contract code thoroughly and perform adequate testing before deploying it on the Ethereum blockchain. The contract's security and functionality are crucial considerations when using it in production.
-
-For any questions or issues related to the smart contract, you can contact the contract owner or developer for support.
+7. Lastly, there is a chat box still in development in case managers and operators need to coordinate about the orders. The front-end has already been developed, but the backend is still under concept development to choose the most efficient way to execute it.
 
 ### License
 This smart contract is licensed under the MIT License. See the LICENSE file for more details.
