@@ -37,7 +37,6 @@ function ManagerDashboard() {
       style: "currency",
       currency: "IDR",
     }).format(amount);
-
     return formattedAmount.replace(/,(\d{2})$/, ",-");
   };
 
@@ -45,6 +44,14 @@ function ManagerDashboard() {
     const year = dateString.slice(0, 4);
     const month = dateString.slice(4, 6);
     const day = dateString.slice(6, 8);
+    return `${day}.${month}.${year}`;
+  };
+
+  const formatUnixTimestamp = (timestamp) => {
+    const date = new Date(timestamp * 1000);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
     return `${day}.${month}.${year}`;
   };
 
@@ -115,7 +122,7 @@ function ManagerDashboard() {
                       Owner: <b>{orders[1]}</b>
                     </p>
                     <p style={styles.list}>
-                      Date: <b>{formatDate(orders[2].toString())}</b>
+                      Date: <b>{formatUnixTimestamp(orders[2].toString())}</b>
                     </p>
                     <p style={styles.list}>
                       Dead: <b>{formatDate(orders[3].toString())}</b>
