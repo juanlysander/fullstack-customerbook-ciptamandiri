@@ -1,6 +1,6 @@
 # README
 
-The CustomerBook smart contract is a decentralized application (DApp) designed to manage orders and payments for Cipta Mandiri Printing Business. It allows users to create, update, and delete orders, and tracks their status through various stages of completion. The smart contract is built on the Ethereum blockchain and is implemented in Solidity version 0.8.18.
+The CustomerBook smart contract is a decentralized application (DApp) designed to manage orders and payments for Cipta Mandiri Printing Business. It allows users to create, update, and delete orders, and tracks their status through various stages of completion. The smart contract is built on the Polygon blockchain and is implemented in Solidity version 0.8.18.
 
 #### Private Keys
 use this private key to act as Owner and grant access to all features. See Features below
@@ -32,8 +32,8 @@ The smart contract logs various events, such as order creation, order modificati
 
 
 ## Getting Started
-To interact with the CustomerBook smart contract, you will need an Ethereum wallet such as MetaMask. Ensure that you are connected to the Sepolia test network, if you dont have the network, follow this guide
-[Sepolia](https://www.datawallet.com/crypto/add-sepolia-to-metamask)
+To interact with the CustomerBook smart contract, you will need a wallet such as MetaMask. Ensure that you are connected to the Sepolia test network, if you dont have the network, follow this guide
+[Mumbai](https://blog.pods.finance/guide-connecting-mumbai-testnet-to-your-metamask-87978071aca8)
 
 Here are some examples of interactions you can perform:
 
