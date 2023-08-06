@@ -142,12 +142,12 @@ function OperatorDashboard() {
                     await contract.call("callToMark", [id]);
                   }}
                   onSuccess={() => {
+                    alert("Call manager succeed!");
                     resetForm();
-                    Alert("Success calling manager to mark the order!");
                   }}
                   onError={(error) => {
                     console.log(error);
-                    alert("Something went wrong!");
+                    alert("Something has gone wrong");
                   }}
                   style={styles.blankButton}
                 >

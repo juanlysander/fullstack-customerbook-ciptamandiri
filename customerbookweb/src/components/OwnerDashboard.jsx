@@ -68,12 +68,12 @@ const OwnerDashboard = () => {
                       await contract.call("setAdmin", [addAdminAddress]);
                     }}
                     onSuccess={() => {
+                      alert("Admin address has been added!");
                       resetForm();
-                      alert("Adding Admin Success");
                     }}
                     onError={(error) => {
+                      alert("Something has gone wrong!");
                       console.log(error);
-                      alert("Something went wrong");
                     }}
                     style={styles.blankButton}
                   >
@@ -122,12 +122,12 @@ const OwnerDashboard = () => {
                       await contract.call("setManager", [addManagerAddress]);
                     }}
                     onSuccess={() => {
+                      alert("Manager address has been added!");
                       resetForm();
-                      alert("Adding Manager Success");
                     }}
                     onError={(error) => {
+                      alert("Something has gone wrong!");
                       console.log(error);
-                      alert("Something went wrong");
                     }}
                     style={styles.blankButton}
                   >
@@ -177,12 +177,12 @@ const OwnerDashboard = () => {
                       await contract.call("setOperator", [addOperatorAddress]);
                     }}
                     onSuccess={() => {
+                      alert("Operator address has been added!");
                       resetForm();
-                      alert("Adding Operator Success");
                     }}
                     onError={(error) => {
+                      alert("Something has gone wrong!");
                       console.log(error);
-                      alert("Something went wrong");
                     }}
                     style={styles.blankButton}
                   >
@@ -259,12 +259,12 @@ const OwnerDashboard = () => {
                     ]);
                   }}
                   onSuccess={() => {
+                    alert("Admin address has been changed!");
                     resetForm();
-                    alert("Changing Admin Success");
                   }}
                   onError={(error) => {
+                    alert("Something has gone wrong!");
                     console.log(error);
-                    alert("Something went wrong");
                   }}
                   style={styles.blankButton}
                 >
@@ -312,12 +312,12 @@ const OwnerDashboard = () => {
                     ]);
                   }}
                   onSuccess={() => {
+                    alert("Manager address has been changed!");
                     resetForm();
-                    alert("Changing Manager Success");
                   }}
                   onError={(error) => {
+                    alert("Something has gone wrong!");
                     console.log(error);
-                    alert("Something went wrong");
                   }}
                   style={styles.blankButton}
                 >
@@ -365,12 +365,12 @@ const OwnerDashboard = () => {
                     ]);
                   }}
                   onSuccess={() => {
+                    alert("Operator address has been changed!");
                     resetForm();
-                    alert("Changing Operator Success");
                   }}
                   onError={(error) => {
+                    alert("Something has gone wrong!");
                     console.log(error);
-                    alert("Something went wrong");
                   }}
                   style={styles.blankButton}
                 >

@@ -128,8 +128,8 @@ function AddModal({ closeModal }) {
             </div>
             <Web3Button
               contractAddress={CONTRACT_ADDRESS}
-              action={async (contract) => {
-                await contract.call("addOrder", [
+              action={(contract) => {
+                contract.call("addOrder", [
                   customer,
                   deadline,
                   name,
@@ -142,11 +142,9 @@ function AddModal({ closeModal }) {
               onSuccess={() => {
                 resetForm();
                 closeModal(false);
-                alert("Success adding new order!");
               }}
               onError={(error) => {
                 console.log(error);
-                alert("Something went wrong");
               }}
               style={styles.addOrderButton}
             >

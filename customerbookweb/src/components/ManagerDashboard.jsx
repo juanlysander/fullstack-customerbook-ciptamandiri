@@ -187,12 +187,12 @@ function ManagerDashboard() {
                     await contract.call("approveMark", [id]);
                   }}
                   onSuccess={() => {
+                    alert("Order status has been changed");
                     resetForm();
-                    Alert("Approving order state success!");
                   }}
                   onError={(error) => {
-                    alert("Something went wrong!");
                     console.log(error);
+                    alert("Something has gone wrong!");
                   }}
                   style={styles.blankButton}
                 >
@@ -223,11 +223,11 @@ function ManagerDashboard() {
                     await contract.call("approvePaid", [idPaid]);
                   }}
                   onSuccess={() => {
+                    alert("Order success marked as PAID");
                     resetForm();
-                    Alert("Order changed to PAID status!");
                   }}
                   onError={(error) => {
-                    alert("Something went wrong!");
+                    alert("Something has gone wrong!");
                     console.log(error);
                   }}
                   style={styles.blankButton}

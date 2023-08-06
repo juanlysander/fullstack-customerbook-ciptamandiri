@@ -46,16 +46,14 @@ function DeleteModal({ closeModal }) {
             </div>
             <Web3Button
               contractAddress={CONTRACT_ADDRESS}
-              action={async (contract) => {
-                await contract.call("deleteOrder", [id]);
+              action={(contract) => {
+                contract.call("deleteOrder", [id]);
               }}
               onSuccess={() => {
                 resetForm();
                 closeModal(false);
-                alert("Order Deleted!");
               }}
               onError={(error) => {
-                alert("Something went wrong!");
                 console.log(error);
               }}
               style={styles.deleteButton}

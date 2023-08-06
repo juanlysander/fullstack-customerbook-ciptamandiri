@@ -142,8 +142,8 @@ function UpdateModal({ closeModal }) {
             </div>
             <Web3Button
               contractAddress={CONTRACT_ADDRESS}
-              action={async (contract) => {
-                await contract.call("updateOrder", [
+              action={(contract) => {
+                contract.call("updateOrder", [
                   id,
                   customer,
                   deadline,
@@ -157,11 +157,9 @@ function UpdateModal({ closeModal }) {
               onSuccess={() => {
                 resetForm();
                 closeModal(false);
-                alert("Order Updated!");
               }}
               onError={(error) => {
                 console.log(error);
-                alert("Something went wrong!");
               }}
               style={styles.updateOrderButton}
             >
